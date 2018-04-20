@@ -11,16 +11,17 @@ class BoardState:
  def board_create(self):
  	self.board = []
  	for i in range(7):
- 		temp_col = []
- 		self.board.append(temp_col)
+ 		self.board.append([0,0,0,0,0,0])
 
 
  def place_piece(self, pos, player):
  	placed = False
- 	if len(self.board[pos]) < 6:
- 		self.board[pos].append(player)
- 		self.flipped = False
- 		placed = True
+ 	for i in range(6):
+ 		if self.board[pos][i] == 0:
+ 			self.board[pos][i] = player
+ 			placed = True
+ 			break
+
  	return placed
 
 
@@ -28,6 +29,15 @@ class BoardState:
  	print(self.board)
 
  def flip_board(self):
- 	for i in range(7):
- 		self.board[i].reverse()
+ 	for i in self.board:
+ 		temp_col = []
+ 		for j in i:
+ 			if j != 0:
+ 				temp_col.append(j)
+ 		temp_col.reverse()
+ 		for j in range(len(temp_col)):
+ 			if i[j] != 0:
+ 				i[j] = temp_col[j]
+
+
  	self.flipped = True
