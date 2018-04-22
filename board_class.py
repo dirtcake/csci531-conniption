@@ -2,7 +2,7 @@ class BoardState:
 
  def __init__(self, board):
  	
- 	if board == NULL:
+ 	if board == None:
  		board_create()
  	else:
  		self.board = board
