@@ -1,12 +1,15 @@
 class BoardState:
 
- def __init__(self, board):
+ def __init__(self, board, turn, p1_flips, p2_flips):
  	
  	if board == None:
  		board_create()
  	else:
  		self.board = board
  	self.flipped = False
+ 	self.player_turn = turn
+ 	self.p1_flips = p1_flips
+ 	self.p2_flips = p2_flips
 
  def board_create(self):
  	self.board = []
@@ -19,6 +22,7 @@ class BoardState:
  	for i in range(6):
  		if self.board[pos][i] == 0:
  			self.board[pos][i] = player
+ 			self.flipped = False
  			placed = True
  			break
 
