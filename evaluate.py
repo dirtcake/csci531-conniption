@@ -14,8 +14,9 @@ class Evaluator:
                      ]
 
     def evaluate_full(self, board, player):
-        '''evaluates a board state for a specific player.'''
+        """evaluates a board state for a specific player."""
 
+        # each line of 4 pieces is treated as a ternary string, converted to decimal, then used as an array index
         # for each piece, check the 3 pieces in the column above, in the row to the right, in the up-right diagonal, and
         # in the down-right diagonal
         total = 0
@@ -27,17 +28,16 @@ class Evaluator:
                 if r < 3:
                     total += self.evals[start + board[c][r+1] * 9 + board[c][r+2] * 3 + board[c][r+3]]
                 
-                # check row
                 if c < 4:
+                    # check row
                     total += self.evals[start + board[c+1][r] * 9 + board[c+2][r] * 3 + board[c+3][r]]
 
-                # check up-right diagonal
-                if r < 3 and c < 4:
-                    total += self.evals[start + board[c+1][r+1] * 9 + board[c+2][r+2] * 3 + board[c+3][r+3]]
-
-                # check down-right diagonal
-                if r > 2 and c < 4:
-                    total += self.evals[start + board[c+1][r-1] * 9 + board[c+2][r-2] * 3 + board[c+3][r-3]]
+                    if r < 3:
+                        # check up-right diagonal
+                        total += self.evals[start + board[c+1][r+1] * 9 + board[c+2][r+2] * 3 + board[c+3][r+3]]
+                    else:
+                        # check down-right diagonal
+                        total += self.evals[start + board[c+1][r-1] * 9 + board[c+2][r-2] * 3 + board[c+3][r-3]]
 
         if player == 2:
             total = -total
