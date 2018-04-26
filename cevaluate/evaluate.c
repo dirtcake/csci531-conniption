@@ -118,6 +118,6 @@ static PyObject *evaluate_evaluate_full(PyObject *self, PyObject *args)
 	
 
     /* Build the return value */
-    PyObject *ret = Py_BuildValue("n", total);
+    PyObject *ret = Py_BuildValue("i", total);
     return ret;
 }
