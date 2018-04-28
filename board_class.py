@@ -1,12 +1,12 @@
 class BoardState:
 
-    def __init__(self, board=None, turn=1, p1_flips=4, p2_flips=4):
+    def __init__(self, board=None, turn=1, p1_flips=4, p2_flips=4, flipped=False):
 
         if board is None:
             self.board_create()
         else:
             self.board = board
-        self.flipped = False
+        self.flipped = flipped
         self.player_turn = turn
         self.p1_flips = p1_flips
         self.p2_flips = p2_flips
