@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from board_class import BoardState
 from expand import breadth
-from search import basic_tree_search
+from search import basic_tree_search, alpha_beta_search
 from evaluate import Evaluator
 import time
 import sys
@@ -22,11 +22,13 @@ def print_board(board):
 def human_move(state):
     print_board(state.board)
     move = input('enter move: ')
-
     
-    if move.startswith('f') and not state.flipped:
+    if move.startswith('f'):
         move = move[1:]
-        state.flip_board()
+        if state.flipped:
+            print('You cannot flip the board right now.')
+        else:
+            state.flip_board()
 
     state.place_piece(int(move[0]), 2)
     state.player_turn = state.player_turn % 2 + 1
@@ -55,13 +57,15 @@ if __name__ == '__main__':
 
     while True:
         print('I am thinking...')
-        state = basic_tree_search(state)
+        #state, ai_move = basic_tree_search(state)
+        state, ai_move = alpha_beta_search(state, 4)
 
         if ev.evaluate_full(state.board, 1) >= 500000:
             print_board(state.board)
             print('I win.')
             break
 
+        print('AI move: {}'.format(ai_move))
         human_move(state)
 
         if ev.evaluate_full(state.board, 1) <= -500000:
