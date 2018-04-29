@@ -29,6 +29,7 @@ def human_move(state):
         state.flip_board()
 
     state.place_piece(int(move[0]), 2)
+    state.player_turn = state.player_turn % 2 + 1
 
     if move.endswith('f'):
         state.flip_board()
