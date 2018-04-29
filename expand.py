@@ -8,17 +8,16 @@ def breadth(board_state):
         for j in range(6):
             if board_state.board[i][j] == 0:
                 board_state.board[i][j] = board_state.player_turn
-                if board_state.player_turn is 1:
-                    yield(BoardState(board_state.board, 2, board_state.p1_flips, board_state.p2_flips), [i, j])
-                else:
-                    yield(BoardState(board_state.board, 1, board_state.p1_flips, board_state.p2_flips))
+                yield (BoardState(deepcopy(board_state.board), board_state.player_turn % 2 + 1, board_state.p1_flips,
+                       board_state.p2_flips), [i, j])
                 board_state.board[i][j] = 0
                 if j < 6 and not board_state.flipped:
                     if board_state.player_turn is 1 and board_state.p1_flips > 1:
                         for k in range(j, 0, -1):
                             board_state.board[i][k] = board_state.board[i][k-1]
                         board_state.board[i][0] = board_state.player_turn
-                        yield (BoardState(board_state.board, 2, board_state.p1_flips - 2, board_state.p2_flips, True), [i, 0])
+                        yield (BoardState(deepcopy(board_state.board), board_state.player_turn % 2 + 1, board_state.p1_flips - 2,
+                               board_state.p2_flips, True), [i, 0])
                         for k in range(j):
                             board_state.board[i][k] = board_state.board[i][k+1]
                         board_state.board[i][j] = 0
@@ -26,7 +25,8 @@ def breadth(board_state):
                         for k in range(j, 0, -1):
                             board_state.board[i][k] = board_state.board[i][k-1]
                         board_state.board[i][0] = board_state.player_turn
-                        yield (BoardState(board_state.board, 2, board_state.p1_flips, board_state.p2_flips - 2, True), [i, 0])
+                        yield (BoardState(deepcopy(board_state.board), board_state.player_turn % 2 + 1, board_state.p1_flips,
+                               board_state.p2_flips - 2, True), [i, 0])
                         for k in range(j):
                             board_state.board[i][k] = board_state.board[i][k+1]
                         board_state.board[i][j] = 0
@@ -36,13 +36,15 @@ def breadth(board_state):
             if flipped_board[i][j] == 0 and board_state.p1_flips > 0:
                 if not board_state.flipped:
                     flipped_board[i][j] = board_state.player_turn
-                    yield(BoardState(flipped_board, 2, board_state.p1_flips, board_state.p1_flips - 1, True), [i, 0])
+                    yield (BoardState(deepcopy(flipped_board), board_state.player_turn % 2 + 1, board_state.p1_flips,
+                           board_state.p1_flips - 1, True), [i, 0])
                     flipped_board[i][j] = 0
                 if j < 6:
                     for k in range(j, 0, -1):
                         flipped_board[i][k] = flipped_board[i][k-1]
                     flipped_board[i][0] = board_state.player_turn
-                    yield(BoardState(flipped_board, 2, board_state.p1_flips, board_state.p1_flips - 1, True), [i, 0])
+                    yield (BoardState(deepcopy(flipped_board), board_state.player_turn % 2 + 1, board_state.p1_flips,
+                           board_state.p1_flips - 1, True), [i, 0])
                     for k in range(j):
                         flipped_board[i][k] = flipped_board[i][k+1]
                     flipped_board[i][j] = 0
@@ -50,13 +52,15 @@ def breadth(board_state):
             if flipped_board[i][j] == 0 and board_state.p2_flips > 0:
                 if not board_state.flipped:
                     flipped_board[i][j] = board_state.player_turn
-                    yield(BoardState(flipped_board, 2, board_state.p1_flips, board_state.p2_flips - 1, True), [i, 0])
+                    yield (BoardState(deepcopy(flipped_board), board_state.player_turn % 2 + 1, board_state.p1_flips,
+                           board_state.p2_flips - 1, True), [i, 0])
                     flipped_board[i][j] = 0
                 if j < 6:
                     for k in range(j, 0, -1):
                         flipped_board[i][k] = flipped_board[i][k-1]
                     flipped_board[i][0] = board_state.player_turn
-                    yield(BoardState(flipped_board, 2, board_state.p1_flips, board_state.p1_flips - 2, True), [i, 0])
+                    yield (BoardState(deepcopy(flipped_board), board_state.player_turn % 2 + 1, board_state.p1_flips,
+                           board_state.p1_flips - 2, True), [i, 0])
                     for k in range(j):
                         flipped_board[i][k] = flipped_board[i][k+1]
                     flipped_board[i][j] = 0
