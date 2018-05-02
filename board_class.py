@@ -29,7 +29,15 @@ class BoardState:
         return placed
 
     def print_board(self):
-        print(self.board)
+        for r in range(6):
+            for c in range(7):
+                piece = self.board[c][5 - r]
+                if piece == 0:
+                    print('.', end=' ')
+                else:
+                    print(piece, end=' ')
+            print()
+        print('------------')
 
     def flip_board(self):
         for i in self.board:
