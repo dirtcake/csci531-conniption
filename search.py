@@ -7,7 +7,7 @@ def max_value(state, alpha, beta, depth):
     val = evaluate_full(state.board, 1)
 
     if depth == 0 or abs(val) > 500000:
-        return val,
+        return val
 
     v = -2147483648
     v_i = 0
