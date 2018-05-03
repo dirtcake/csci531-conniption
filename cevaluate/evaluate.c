@@ -59,7 +59,7 @@ static int evals[81] = {
 static PyObject *evaluate_evaluate_full(PyObject *self, PyObject *args)
 {
 	PyObject *board;
-	long player;
+	int player;
 
     /* Parse the input tuple */
     if (!PyArg_ParseTuple(args, "Oi", &board, &player)) {
