@@ -2,6 +2,7 @@ from expand import breadth
 from board_class import BoardState
 from cevaluate.evaluate import evaluate_full
 
+
 def max_value(state, alpha, beta, depth):
     val = evaluate_full(state.board, 1)
 
@@ -11,14 +12,11 @@ def max_value(state, alpha, beta, depth):
     v = -2147483648
     v_i = 0
     for i, move in enumerate(breadth(state)):
-        v2 = min_value(move[0], alpha, beta, depth-1)
-        if v2 > v:
-            v = v2
-            v_i = i
+        v = max(v, min_value(move[0], alpha, beta, depth-1))
         alpha = max(alpha, v)
         if beta <= alpha:
             break
-    return v, v_i
+    return v
 
 
 def min_value(state, alpha, beta, depth):
@@ -29,20 +27,18 @@ def min_value(state, alpha, beta, depth):
 
     v = 2147483647
     for move in breadth(state):
-        v = min((v,), max_value(move[0], alpha, beta, depth-1), key=lambda x: x[0])[0]
+        v = min(v, max_value(move[0], alpha, beta, depth-1))
         beta = min(beta, v)
         if beta <= alpha:
             break
     return v
 
 
-
 def alpha_beta_search(state, depth):
     moves = list(breadth(state))
 
-    _, index = max_value(state, -2147483648, 2147483647, depth)
-    return moves[index]
-
+    moves_evals = [min_value(move[0], -2147483648, 2147483647, depth-1) for move in moves]
+    return moves[moves_evals.index(max(moves_evals))]
 
 
 def basic_tree_search(state):
