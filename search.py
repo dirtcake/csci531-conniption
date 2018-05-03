@@ -4,7 +4,7 @@ from cevaluate.evaluate import evaluate_full
 
 
 def max_value(state, alpha, beta, depth):
-    val = evaluate_full(state.board, 1)
+    val = evaluate_full(state.board, state.player_turn)
 
     if depth == 0 or abs(val) > 500000:
         return val
@@ -20,7 +20,7 @@ def max_value(state, alpha, beta, depth):
 
 
 def min_value(state, alpha, beta, depth):
-    val = evaluate_full(state.board, 1)
+    val = evaluate_full(state.board, state.player_turn % 2 + 1)
 
     if depth == 0 or abs(val) > 500000:
         return val
