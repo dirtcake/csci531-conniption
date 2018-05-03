@@ -131,5 +131,3 @@ static PyObject *evaluate_evaluate_full(PyObject *self, PyObject *args)
     return ret;
 }
 
-
-a
