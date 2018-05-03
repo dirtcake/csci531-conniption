@@ -1,27 +1,17 @@
 #!/usr/bin/env python
 from board_class import BoardState
 from expand import breadth
-from search import basic_tree_search, alpha_beta_search
-from evaluate import Evaluator
-import time
+from search import alpha_beta_search
+from cevaluate.evaluate import evaluate_full
+import functools
+import random
 import sys
-
-def print_board(board):
-    for r in range(6):
-        for c in range(7):
-            piece = board[c][5-r]
-            if piece == 0:
-                print('.', end=' ')
-            else:
-                print(piece, end=' ')
-        print()
-    print('------------')
-    print('0 1 2 3 4 5 6\n')
 
 
 def human_move(state):
-    print_board(state.board)
-    move = input('enter move: ')
+    print('P1 flips:', state.p1_flips)
+    print('P2 flips:', state.p2_flips)
+    move = input('Enter move: ')
     
     if move.startswith('f'):
         move = move[1:]
@@ -30,45 +20,63 @@ def human_move(state):
         else:
             state.flip_board()
 
-    state.place_piece(int(move[0]), 2)
+    state.place_piece(int(move[0]), state.player_turn)
     state.player_turn = state.player_turn % 2 + 1
 
     if move.endswith('f'):
         state.flip_board()
     
-    print_board(state.board)
+    return state, [0, 0]
+
+
+def random_move(state):
+    moves = list(breadth(state))
+    return random.choice(moves)
+
+
+def play(player1, player2):
+    state = BoardState()
+
+    if player1 == human_move or player2 == human_move:
+        state.print_board()
+
+    while True:
+        state, move = player1(state)
+
+        if player1 == human_move or player2 == human_move:
+            state.print_board()
+
+        if evaluate_full(state.board, 1) >= 500000:
+            return 1
+
+        state, move = player2(state)
+
+        if player1 == human_move or player2 == human_move:
+            state.print_board()
+
+        if evaluate_full(state.board, 2) >= 500000:
+            return 2
+
+
+def usage():
+    print('Usage: {} <player1> <player2>'.format(sys.argv[0]))
+    print('Valid players: human, random, minimax')
 
 
 if __name__ == '__main__':
-    board = [[0,0,0,0,0,0],
-             [0,0,0,0,0,0],
-             [0,0,0,0,0,0],
-             [0,0,0,0,0,0],
-             [0,0,0,0,0,0],
-             [0,0,0,0,0,0],
-             [0,0,0,0,0,0]]
+    agents = {
+            'random': random_move,
+            'human': human_move,
+            'minimax': functools.partial(alpha_beta_search, depth=3),
+    }
 
-    state = BoardState(board, 1, 4, 4)
-    ev = Evaluator()
+    if len(sys.argv) < 3 or sys.argv[1] not in agents or sys.argv[2] not in agents:
+        usage()
+        sys.exit(0)
 
+    player1 = agents[sys.argv[1]]
+    player2 = agents[sys.argv[2]]
 
-    if '-humanfirst' in sys.argv:
-        human_move(state)
-
-    while True:
-        print('I am thinking...')
-        #state, ai_move = basic_tree_search(state)
-        state, ai_move = alpha_beta_search(state, 4)
-
-        if ev.evaluate_full(state.board, 1) >= 500000:
-            print_board(state.board)
-            print('I win.')
-            break
-
-        print('AI move: {}'.format(ai_move))
-        human_move(state)
-
-        if ev.evaluate_full(state.board, 1) <= -500000:
-            print('You win.')
-            break
+    result = play(player1, player2)
+    print('Player {} ({}) wins.'.format(result, sys.argv[result]))
 
