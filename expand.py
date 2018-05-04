@@ -21,22 +21,22 @@ def breadth(board_state):
                 board[i][j] = 0
                 break
 
-    if flips > 0 and not board_state.flipped:
-
-        for i in range(7):
-            for j in range(6):
-                # Flip then place
-                if flipped_board[i][j] == 0:
-                    flipped_board[i][j] = board_state.player_turn
-                    if board_state.player_turn == 1:
-                        yield (BoardState([list(col) for col in flipped_board], board_state.player_turn % 2 + 1,
-                                          board_state.p1_flips - 1, board_state.p2_flips, False), [i, j])
-                        flipped_board[i][j] = 0
-                    if board_state.player_turn == 2:
-                        yield (BoardState([list(col) for col in flipped_board], board_state.player_turn % 2 + 1,
-                                          board_state.p1_flips, board_state.p2_flips - 1, False), [i, j])
-                        flipped_board[i][j] = 0
-                    break
+    if flips > 0:
+        if not board_state.flipped:
+            for i in range(7):
+                for j in range(6):
+                    # Flip then place
+                    if flipped_board[i][j] == 0:
+                        flipped_board[i][j] = board_state.player_turn
+                        if board_state.player_turn == 1:
+                            yield (BoardState([list(col) for col in flipped_board], board_state.player_turn % 2 + 1,
+                                              board_state.p1_flips - 1, board_state.p2_flips, False), [i, j])
+                            flipped_board[i][j] = 0
+                        if board_state.player_turn == 2:
+                            yield (BoardState([list(col) for col in flipped_board], board_state.player_turn % 2 + 1,
+                                              board_state.p1_flips, board_state.p2_flips - 1, False), [i, j])
+                            flipped_board[i][j] = 0
+                        break
 
         for i in range(7):
             for j in range(6):
