@@ -20,26 +20,43 @@ class Evaluator:
         # for each piece, check the 3 pieces in the column above, in the row to the right, in the up-right diagonal, and
         # in the down-right diagonal
         total = 0
+        winner = 0
         for c in range(7):
             for r in range(6):
                 start = board[c][r] * 27
 
                 # check column
                 if r < 3:
-                    total += self.evals[start + board[c][r+1] * 9 + board[c][r+2] * 3 + board[c][r+3]]
+                    index = start + board[c][r+1] * 9 + board[c][r+2] * 3 + board[c][r+3]
+                    if (self.evals[index] > 500000 and player == 1) or (self.evals[index] < -500000 and player == 2):
+                        winner = player
+                    total += self.evals[index]
                 
                 if c < 4:
                     # check row
-                    total += self.evals[start + board[c+1][r] * 9 + board[c+2][r] * 3 + board[c+3][r]]
+                    index = start + board[c+1][r] * 9 + board[c+2][r] * 3 + board[c+3][r]
+                    if (self.evals[index] > 500000 and player == 1) or (self.evals[index] < -500000 and player == 2):
+                        winner = player
+                    total += self.evals[index]
 
                     if r < 3:
                         # check up-right diagonal
-                        total += self.evals[start + board[c+1][r+1] * 9 + board[c+2][r+2] * 3 + board[c+3][r+3]]
+                        index = start + board[c+1][r+1] * 9 + board[c+2][r+2] * 3 + board[c+3][r+3]
+                        if (self.evals[index] > 500000 and player == 1) or (self.evals[index] < -500000 and player == 2):
+                            winner = player
+                        total += self.evals[index]
                     else:
                         # check down-right diagonal
-                        total += self.evals[start + board[c+1][r-1] * 9 + board[c+2][r-2] * 3 + board[c+3][r-3]]
+                        index = start + board[c+1][r-1] * 9 + board[c+2][r-2] * 3 + board[c+3][r-3]
+                        if (self.evals[index] > 500000 and player == 1) or (self.evals[index] < -500000 and player == 2):
+                            winner = player
+                        total += self.evals[index]
 
         if player == 2:
             total = -total
+
+        if winner == player:
+            total = 1000000
+
         return total
 

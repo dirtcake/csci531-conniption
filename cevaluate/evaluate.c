@@ -85,32 +85,52 @@ static PyObject *evaluate_evaluate_full(PyObject *self, PyObject *args)
 	}
 
 	int total = 0;
+	int index;
+	// winner is set to player when player has a win.
+	// this is to avoid one player's win cancelling the other when both have a win
+	int winner = 0;
 	for (int c = 0; c < 7; c++) {
 		for (int r = 0; r < 6; r++) {
 			long start = PyLong_AsLong(PySequence_GetItem(col[c], r)) * 27;
 
 			if (r < 3) {
-				total += evals[start
-							   + PyLong_AsLong(PySequence_GetItem(col[c], r+1)) * 9
-							   + PyLong_AsLong(PySequence_GetItem(col[c], r+2)) * 3
-							   + PyLong_AsLong(PySequence_GetItem(col[c], r+3))];
+				index = start
+					+ PyLong_AsLong(PySequence_GetItem(col[c], r+1)) * 9
+					+ PyLong_AsLong(PySequence_GetItem(col[c], r+2)) * 3
+					+ PyLong_AsLong(PySequence_GetItem(col[c], r+3));
+				if ((evals[index] > 500000 && player == 1) || (evals[index] < -500000 && player == 2)) {
+					winner = player;
+				}
+				total += evals[index];
 			}
 
 			if (c < 4) {
-				total += evals[start
-							   + PyLong_AsLong(PySequence_GetItem(col[c+1], r)) * 9
-							   + PyLong_AsLong(PySequence_GetItem(col[c+2], r)) * 3
-							   + PyLong_AsLong(PySequence_GetItem(col[c+3], r))];
+				index = start
+					+ PyLong_AsLong(PySequence_GetItem(col[c+1], r)) * 9
+					+ PyLong_AsLong(PySequence_GetItem(col[c+2], r)) * 3
+					+ PyLong_AsLong(PySequence_GetItem(col[c+3], r));
+				if ((evals[index] > 500000 && player == 1) || (evals[index] < -500000 && player == 2)) {
+					winner = player;
+				}
+				total += evals[index];
 				if (r < 3) {
-					total += evals[start
-								   + PyLong_AsLong(PySequence_GetItem(col[c+1], r+1)) * 9
-								   + PyLong_AsLong(PySequence_GetItem(col[c+2], r+2)) * 3
-								   + PyLong_AsLong(PySequence_GetItem(col[c+3], r+3))];
+					index = start
+						+ PyLong_AsLong(PySequence_GetItem(col[c+1], r+1)) * 9
+						+ PyLong_AsLong(PySequence_GetItem(col[c+2], r+2)) * 3
+						+ PyLong_AsLong(PySequence_GetItem(col[c+3], r+3));
+					if ((evals[index] > 500000 && player == 1) || (evals[index] < -500000 && player == 2)) {
+						winner = player;
+					}
+					total += evals[index];
 				} else {
-					total += evals[start
-								   + PyLong_AsLong(PySequence_GetItem(col[c+1], r-1)) * 9
-								   + PyLong_AsLong(PySequence_GetItem(col[c+2], r-2)) * 3
-								   + PyLong_AsLong(PySequence_GetItem(col[c+3], r-3))];
+					index = start
+						+ PyLong_AsLong(PySequence_GetItem(col[c+1], r-1)) * 9
+						+ PyLong_AsLong(PySequence_GetItem(col[c+2], r-2)) * 3
+						+ PyLong_AsLong(PySequence_GetItem(col[c+3], r-3));
+					if ((evals[index] > 500000 && player == 1) || (evals[index] < -500000 && player == 2)) {
+						winner = player;
+					}
+					total += evals[index];
 				}
 			}
 		}
@@ -124,7 +144,11 @@ static PyObject *evaluate_evaluate_full(PyObject *self, PyObject *args)
 	for (int i = 0; i < 7; i++) {
 		Py_XDECREF(col[i]);
 	}
-	
+
+	// if player can win, ensure this isn't cancelled out by the other player's win
+	if (winner == player) {
+		total = 1000000;
+	}
 
     /* Build the return value */
     PyObject *ret = Py_BuildValue("i", total);
