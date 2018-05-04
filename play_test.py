@@ -3,29 +3,46 @@ from board_class import BoardState
 from expand import breadth
 from search import alpha_beta_search
 from cevaluate.evaluate import evaluate_full
+#from evaluate import Evaluator
 import functools
 import random
 import sys
 
 
+#eval = Evaluator()
+
 def human_move(state):
     print('P1 flips:', state.p1_flips)
     print('P2 flips:', state.p2_flips)
     move = input('Enter move: ')
-    
-    if move.startswith('f'):
+
+    if state.player_turn == 1:
+        flips = state.p1_flips
+    else:
+        flips = state.p2_flips
+
+    if move.startswith('f') and flips > 0:
         move = move[1:]
         if state.flipped:
             print('You cannot flip the board right now.')
         else:
             state.flip_board()
+            if state.player_turn == 1:
+                state.p1_flips -= 1
+            else:
+                state.p2_flips -= 1
 
     state.place_piece(int(move[0]), state.player_turn)
+
+    if move.endswith('f') and flips > 0:
+        state.flip_board()
+        if state.player_turn == 1:
+            state.p1_flips -= 1
+        else:
+            state.p2_flips -= 1
+
     state.player_turn = state.player_turn % 2 + 1
 
-    if move.endswith('f'):
-        state.flip_board()
-    
     return state, [0, 0]
 
 
@@ -46,6 +63,7 @@ def play(player1, player2):
         if player1 == human_move or player2 == human_move:
             state.print_board()
 
+        # if eval.evaluate_full(state.board, 1) >= 500000:
         if evaluate_full(state.board, 1) >= 500000:
             return 1
 
@@ -54,6 +72,7 @@ def play(player1, player2):
         if player1 == human_move or player2 == human_move:
             state.print_board()
 
+        # if eval.evaluate_full(state.board, 2) >= 500000:
         if evaluate_full(state.board, 2) >= 500000:
             return 2
 

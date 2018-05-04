@@ -1,9 +1,14 @@
 from expand import breadth
 from board_class import BoardState
+# from evaluate import Evaluator
 from cevaluate.evaluate import evaluate_full
 
 
+# eval = Evaluator()
+
+
 def max_value(state, alpha, beta, depth):
+    # val = eval.evaluate_full(state.board, state.player_turn)
     val = evaluate_full(state.board, state.player_turn)
 
     if depth == 0 or abs(val) > 500000:
@@ -19,6 +24,7 @@ def max_value(state, alpha, beta, depth):
 
 
 def min_value(state, alpha, beta, depth):
+    # val = eval.evaluate_full(state.board, state.player_turn % 2 + 1)
     val = evaluate_full(state.board, state.player_turn % 2 + 1)
 
     if depth == 0 or abs(val) > 500000:
@@ -37,6 +43,7 @@ def alpha_beta_search(state, depth):
     moves = list(breadth(state))
 
     moves_evals = [min_value(move[0], -2147483648, 2147483647, depth-1) for move in moves]
+    # print(moves_evals)
     return moves[moves_evals.index(max(moves_evals))]
 
 
