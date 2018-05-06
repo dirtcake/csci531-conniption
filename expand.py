@@ -11,7 +11,7 @@ def breadth(board_state):
     else:
         flips = board_state.p2_flips
 
-    for i in range(7):
+    for i in [3, 2, 4, 1, 5, 0, 6]:
         for j in range(6):
             # Place with no flips
             if board[i][j] == 0:
@@ -23,7 +23,7 @@ def breadth(board_state):
 
     if flips > 0:
         if not board_state.flipped:
-            for i in range(7):
+            for i in [3, 2, 4, 1, 5, 0, 6]:
                 for j in range(6):
                     # Flip then place
                     if flipped_board[i][j] == 0:
@@ -38,7 +38,7 @@ def breadth(board_state):
                             flipped_board[i][j] = 0
                         break
 
-        for i in range(7):
+        for i in [3, 2, 4, 1, 5, 0, 6]:
             for j in range(6):
                 # Place then flip
                 if flipped_board[i][j] == 0:
@@ -57,7 +57,7 @@ def breadth(board_state):
                     break
 
     if flips > 1 and not board_state.flipped:
-        for i in range(7):
+        for i in [3, 2, 4, 1, 5, 0, 6]:
             for j in range(6):
                 # Flip place flip
                 if board[i][j] == 0:
