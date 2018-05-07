@@ -58,31 +58,31 @@ static int evals[81] = {
 
 static PyObject *evaluate_evaluate_full(PyObject *self, PyObject *args)
 {
-	PyObject *board;
+	PyObject *pyboard;
 	int player;
 
     /* Parse the input tuple */
-    if (!PyArg_ParseTuple(args, "Oi", &board, &player)) {
+    if (!PyArg_ParseTuple(args, "Oi", &pyboard, &player)) {
         return NULL;
 	}
 
-	if (!PySequence_Check(board)) {
+	if (!PySequence_Check(pyboard)) {
 		return NULL;
 	}
 
-	PyObject *col[7];
+  long board[7][6];
+  PyObject **cols = PySequence_Fast_ITEMS(pyboard);
+  PyObject **col;
 
 	// get the columns
-	for (int i = 0; i < 7; i++) {
-		col[i] = PySequence_GetItem(board, i);
-		// or not
-		if (!PySequence_Check(col[i])) {
-			for (int j = 0; j < 7; j++) {
-				Py_XDECREF(col[i]);
-			}
-			return NULL;
-		}
-	}
+  for (int c = 0; c < 7; c++) {
+    col = PySequence_Fast_ITEMS(cols[c]);
+
+    for (int r = 0; r < 6; r++) {
+      board[c][r] = PyLong_AsLong(col[r]);
+    }
+
+  }
 
 	int total = 0;
 	int index;
@@ -91,13 +91,10 @@ static PyObject *evaluate_evaluate_full(PyObject *self, PyObject *args)
 	int winner = 0;
 	for (int c = 0; c < 7; c++) {
 		for (int r = 0; r < 6; r++) {
-			long start = PyLong_AsLong(PySequence_GetItem(col[c], r)) * 27;
+			long start = board[c][r] * 27;
 
 			if (r < 3) {
-				index = start
-					+ PyLong_AsLong(PySequence_GetItem(col[c], r+1)) * 9
-					+ PyLong_AsLong(PySequence_GetItem(col[c], r+2)) * 3
-					+ PyLong_AsLong(PySequence_GetItem(col[c], r+3));
+				index = start + board[c][r+1] * 9 + board[c][r+2] * 3 + board[c][r+3];
 				if ((evals[index] > 500000 && player == 1) || (evals[index] < -500000 && player == 2)) {
 					winner = player;
 				}
@@ -105,28 +102,19 @@ static PyObject *evaluate_evaluate_full(PyObject *self, PyObject *args)
 			}
 
 			if (c < 4) {
-				index = start
-					+ PyLong_AsLong(PySequence_GetItem(col[c+1], r)) * 9
-					+ PyLong_AsLong(PySequence_GetItem(col[c+2], r)) * 3
-					+ PyLong_AsLong(PySequence_GetItem(col[c+3], r));
+				index = start + board[c+1][r] * 9 + board[c+2][r] * 3 + board[c+3][r];
 				if ((evals[index] > 500000 && player == 1) || (evals[index] < -500000 && player == 2)) {
 					winner = player;
 				}
 				total += evals[index];
 				if (r < 3) {
-					index = start
-						+ PyLong_AsLong(PySequence_GetItem(col[c+1], r+1)) * 9
-						+ PyLong_AsLong(PySequence_GetItem(col[c+2], r+2)) * 3
-						+ PyLong_AsLong(PySequence_GetItem(col[c+3], r+3));
+					index = start + board[c+1][r+1] * 9 + board[c+2][r+2] * 3 + board[c+3][r+3];
 					if ((evals[index] > 500000 && player == 1) || (evals[index] < -500000 && player == 2)) {
 						winner = player;
 					}
 					total += evals[index];
 				} else {
-					index = start
-						+ PyLong_AsLong(PySequence_GetItem(col[c+1], r-1)) * 9
-						+ PyLong_AsLong(PySequence_GetItem(col[c+2], r-2)) * 3
-						+ PyLong_AsLong(PySequence_GetItem(col[c+3], r-3));
+					index = start + board[c+1][r-1] * 9 + board[c+2][r-2] * 3 + board[c+3][r-3];
 					if ((evals[index] > 500000 && player == 1) || (evals[index] < -500000 && player == 2)) {
 						winner = player;
 					}
@@ -138,11 +126,6 @@ static PyObject *evaluate_evaluate_full(PyObject *self, PyObject *args)
 
 	if (player == 2) {
 		total = -total;
-	}
-
-    /* Clean up. */
-	for (int i = 0; i < 7; i++) {
-		Py_XDECREF(col[i]);
 	}
 
 	// if player can win, ensure this isn't cancelled out by the other player's win
