@@ -15,6 +15,7 @@ def human_move(state):
     print('P1 flips:', state.p1_flips)
     print('P2 flips:', state.p2_flips)
     move = input('Enter move: ')
+    move_str = ''
 
     if state.player_turn == 1:
         flips = state.p1_flips
@@ -27,15 +28,18 @@ def human_move(state):
             print('You cannot flip the board right now.')
         else:
             state.flip_board()
+            move_str += 'f'
             if state.player_turn == 1:
                 state.p1_flips -= 1
             else:
                 state.p2_flips -= 1
 
     state.place_piece(int(move[0]), state.player_turn)
+    move_str += move[0]
 
     if move.endswith('f') and flips > 0:
         state.flip_board()
+        move_str += 'f'
         if state.player_turn == 1:
             state.p1_flips -= 1
         else:
@@ -43,7 +47,7 @@ def human_move(state):
 
     state.player_turn = state.player_turn % 2 + 1
 
-    return state, [0, 0]
+    return state, move_str
 
 
 def random_move(state):
@@ -59,6 +63,7 @@ def play(player1, player2):
 
     while True:
         state, move = player1(state)
+        print('Player 1 played {}'.format(move))
 
         if player1 == human_move or player2 == human_move:
             state.print_board()
@@ -68,6 +73,7 @@ def play(player1, player2):
             return 1
 
         state, move = player2(state)
+        print('Player 2 played {}'.format(move))
 
         if player1 == human_move or player2 == human_move:
             state.print_board()

@@ -17,7 +17,7 @@ def breadth(board_state):
             if board[i][j] == 0:
                 board[i][j] = board_state.player_turn
                 yield(BoardState([list(col) for col in board], board_state.player_turn % 2 + 1, board_state.p1_flips,
-                                 board_state.p2_flips), [i, j])
+                                 board_state.p2_flips), i)
                 board[i][j] = 0
                 break
 
@@ -30,11 +30,11 @@ def breadth(board_state):
                         flipped_board[i][j] = board_state.player_turn
                         if board_state.player_turn == 1:
                             yield (BoardState([list(col) for col in flipped_board], board_state.player_turn % 2 + 1,
-                                              board_state.p1_flips - 1, board_state.p2_flips, False), [i, j])
+                                              board_state.p1_flips - 1, board_state.p2_flips, False), 'f{}'.format(i))
                             flipped_board[i][j] = 0
                         if board_state.player_turn == 2:
                             yield (BoardState([list(col) for col in flipped_board], board_state.player_turn % 2 + 1,
-                                              board_state.p1_flips, board_state.p2_flips - 1, False), [i, j])
+                                              board_state.p1_flips, board_state.p2_flips - 1, False), 'f{}'.format(i))
                             flipped_board[i][j] = 0
                         break
 
@@ -47,10 +47,10 @@ def breadth(board_state):
                     flipped_board[i][0] = board_state.player_turn
                     if board_state.player_turn == 1:
                         yield (BoardState([list(col) for col in flipped_board], board_state.player_turn % 2 + 1,
-                                          board_state.p1_flips - 1, board_state.p2_flips, True), [i, j])
+                                          board_state.p1_flips - 1, board_state.p2_flips, True), '{}f'.format(i))
                     if board_state.player_turn == 2:
                         yield (BoardState([list(col) for col in flipped_board], board_state.player_turn % 2 + 1,
-                                          board_state.p1_flips, board_state.p2_flips - 1, True), [i, j])
+                                          board_state.p1_flips, board_state.p2_flips - 1, True), '{}f'.format(i))
                     for k in range(j):
                         flipped_board[i][k] = flipped_board[i][k+1]
                     flipped_board[i][j] = 0
@@ -66,10 +66,10 @@ def breadth(board_state):
                     board[i][0] = board_state.player_turn
                     if board_state.player_turn == 1:
                         yield (BoardState([list(col) for col in board], board_state.player_turn % 2 + 1, board_state.p1_flips - 2,
-                                          board_state.p2_flips, True), [i, j])
+                                          board_state.p2_flips, True), 'f{}f'.format(i))
                     if board_state.player_turn == 2:
                         yield (BoardState([list(col) for col in board], board_state.player_turn % 2 + 1, board_state.p1_flips,
-                                          board_state.p2_flips - 2, True), [i, j])
+                                          board_state.p2_flips - 2, True), 'f{}f'.format(i))
                     for k in range(j):
                         board[i][k] = board[i][k+1]
                     board[i][j] = 0
