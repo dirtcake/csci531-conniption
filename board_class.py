@@ -38,6 +38,7 @@ class BoardState:
                     print(piece, end=' ')
             print()
         print('------------')
+        print("0 1 2 3 4 5 6")
 
     def flip_board(self):
         for i in self.board:

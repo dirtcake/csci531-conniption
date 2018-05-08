@@ -23,8 +23,10 @@ global state
 	
 def human_move(*args):
 	global state
-	if player_type1.get() == "minimax":
-		state, move = functools.partial(alpha_beta_search, depth=3)
+	state.print_board()
+	first_move = True
+	if player_type1.get() == "minimax" and first_move != True:
+		state, move = functools.partial(alpha_beta_search, depth=6)
 		if evaluate_full(state.board, 1) >= 500000:
 		 	status.set("Player 1 wins")
 	
@@ -54,6 +56,7 @@ def human_move(*args):
 	flips_get_P1.set(state.p1_flips)
 	flips_get_P2.set(state.p2_flips)
 	state.player_turn = state.player_turn % 2 + 1
+	first_move = False
 
 	if player_type1.get() == "human":
 		 if evaluate_full(state.board, 1) >= 500000:
@@ -64,7 +67,7 @@ def human_move(*args):
 			status.set("Player 2 wins")
 
 	if player_type2.get() == "minimax":
-		state, move = functools.partial(alpha_beta_search, depth=3)
+		state, move = functools.partial(alpha_beta_search, depth=6)
 		if evaluate_full(state.board, 2) >= 500000:
 			status.set("PLayer 2 wins")
 	state.print_board()
@@ -100,9 +103,11 @@ def human_input(*args):  #needs to be renamed, is acutally human piece entry
 	ttk.Button(game, text = "Place Piece", command=human_move).grid(column = 5, row= 4, sticky=(W)) #does not have the correct fuction call	
 
 def play(*args): #will fill with player
+	if player_type1 == "minimax":
+		state, move = functools.partial(alpha_beta_search, depth=6)
+
 	if player_type1.get() == "human" or player_type2.get() == "human":
 		human_input()
-		print("I'm out")
 
 
 	
