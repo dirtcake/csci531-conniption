@@ -86,7 +86,7 @@ if __name__ == '__main__':
     agents = {
             'random': random_move,
             'human': human_move,
-            'minimax': functools.partial(alpha_beta_search, depth=3),
+            'minimax': functools.partial(alpha_beta_search, depth=6),
     }
 
     if len(sys.argv) < 3 or sys.argv[1] not in agents or sys.argv[2] not in agents:
