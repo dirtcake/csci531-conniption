@@ -1,15 +1,15 @@
 from expand import breadth
 from board_class import BoardState
 from evaluate import Evaluator
-# from cevaluate.evaluate import evaluate_full
+from cevaluate.evaluate import evaluate_full
 
 
 eval = Evaluator()
 
 
 def max_value(state, alpha, beta, depth):
-    val = eval.evaluate_full(state.board, state.player_turn)
-    # val = evaluate_full(state.board, state.player_turn)
+    # val = eval.evaluate_full(state.board, state.player_turn)
+    val = evaluate_full(state.board, state.player_turn)
 
     if depth == 0 or abs(val) > 500000:
         if val > 0:
@@ -27,8 +27,8 @@ def max_value(state, alpha, beta, depth):
 
 
 def min_value(state, alpha, beta, depth):
-    val = eval.evaluate_full(state.board, state.player_turn % 2 + 1)
-    # val = evaluate_full(state.board, state.player_turn % 2 + 1)
+    # val = eval.evaluate_full(state.board, state.player_turn % 2 + 1)
+    val = evaluate_full(state.board, state.player_turn % 2 + 1)
 
     if depth == 0 or abs(val) > 500000:
         if val > 0:
