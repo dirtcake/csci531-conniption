@@ -25,7 +25,7 @@ def human_move(*args):
 	global state
 	state.print_board()
 	first_move = True
-	if player_type1.get() == "minimax" and first_move != True:
+	if player_type1.get() == "minimax" and first_move == False:
 		state, move = functools.partial(alpha_beta_search, depth=6)
 		if evaluate_full(state.board, 1) >= 500000:
 		 	status.set("Player 1 wins")
