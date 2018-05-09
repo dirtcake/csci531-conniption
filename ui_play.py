@@ -153,7 +153,7 @@ def rando_out(*args): #plays ai against random and returns the win percentage
 				count +=1
 				continue
 			state, move = functools.partial(alpha_beta_search, depth=6)
-			if evaluate_full(state.board, 2) >= 500000:
+			if evaluate_full(state.board, 1) >= 500000:
 				count += 1
 				wins += 1
 				continue
